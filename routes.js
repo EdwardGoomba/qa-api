@@ -24,7 +24,7 @@ router.post('/', function(req, res) {
 // Route for specific questions
 router.get('/:qID', function(req, res) {
   res.json({
-    response: 'You sent me a GET request for ID f that' + req.params.qID
+    response: 'You sent me a GET request for ID ' + req.params.qID
   });
 });
 
@@ -33,7 +33,7 @@ router.get('/:qID', function(req, res) {
 router.post('/:qID/answers', function(req, res) {
   res.json({
     response: 'You sent me a POST request to /answers',
-    questionId: req.params.id,
+    questionId: req.params.qID,
     body: req.body
   });
 });
