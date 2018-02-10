@@ -34,6 +34,18 @@ db.once('open', function() {
      next();
    });
 
+   // static method to query animal size
+   AnimalSchema.statics.findSize = function(size, callback) {
+     // this == Animal
+     return this.find({size: size}, callback);
+   }
+
+   // instance method to find similar animal color
+   AnimalSchema.methods.findSameColor = function(callback) {
+     // this == document
+     return this.model('Animal').find({color: this.color}, callback);
+   }
+
   const Animal = mongoose.model('Animal', AnimalSchema);
 
   const elephant = new Animal({
@@ -79,13 +91,17 @@ db.once('open', function() {
     if (err) console.error(err);
     Animal.create(animalData, function(err, animals) {
       if (err) console.error(err);
-      Animal.find({}, function(err, animals) {
-        animals.forEach(function(animal) {
-          console.log(animal.name + ' the ' + animal.color + ' ' + animal.type + ' is a ' + animal.size + '-sized animal.');
+      Animal.findOne({type: 'elephant'}, function(err, elephant) {
+        elephant.findSameColor(function(err, animals) {
+          if (err) console.error(err);
+          animals.forEach(function(animal) {
+            console.log(animal.name + ' the ' + animal.color + ' ' + animal.type + ' is a ' + animal.size + '-sized animal.');
+          });
+          db.close(function() {
+            console.log('db connection closed');
+          });
         });
-        db.close(function() {
-          console.log('db connection closed');
-        });
+
       });
     });
   });
